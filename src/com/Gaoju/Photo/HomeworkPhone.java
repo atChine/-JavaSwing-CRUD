@@ -1,11 +1,13 @@
 package com.Gaoju.Photo;
 
+import com.Gaoju.Dao.StudentDaoImpl;
 import com.Gaoju.School.Student;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.util.List;
 
 /**
  * @ClassName: HomeworkPhone
@@ -73,14 +75,50 @@ public class HomeworkPhone {
         JButton submitButton = new JButton("提交");
         submitButton.setBounds(40, 110, 150, 25);
         panel.add(submitButton);
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = nameText.getText();
+                String address = addressText.getText();
+                String classes = classText.getText();
+                String id = idText.getText();
+                int score = Integer.parseInt(scoreText.getText());
+                Student student = new Student(name, address, classes, id, score);
+                StudentDaoImpl studentDao = new StudentDaoImpl();
+                try {
+                    studentDao.submitStudent(student);
+                } catch (Exception exception) {
+                    System.out.println("提交失败");
+                }
+
+            }
+        });
         //按学号修改
         JButton updateButton = new JButton("按学号修改");
         updateButton.setBounds(220, 110, 150, 25);
         panel.add(updateButton);
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = nameText.getText();
+                String address = addressText.getText();
+                String classes = classText.getText();
+                String id = idText.getText();
+                int score = Integer.parseInt(scoreText.getText());
+                Student student = new Student(name, address, classes, id, score);
+                StudentDaoImpl studentDao = new StudentDaoImpl();
+                try {
+                    studentDao.updateStudent(student);
+                } catch (Exception exception) {
+                    System.out.println("修改失败");
+                }
+            }
+        });
         //按学号查询
         JButton selectButton = new JButton("按学号查询");
         selectButton.setBounds(400, 110, 150, 25);
         panel.add(selectButton);
+
         //查询结果
         JLabel resultLabel = new JLabel("查询结果");
         resultLabel.setBounds(20, 160, 400, 25);
@@ -89,36 +127,25 @@ public class HomeworkPhone {
         JTextField resultText = new JTextField(20);
         resultText.setBounds(80, 160, 400, 25);
         panel.add(resultText);
-
-        //修改用
-        updateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = nameText.getText();
-                String address = addressText.getText();
-                String classes = classText.getText();
-                String id = idText.getText();
-                int score = Integer.parseInt(String.valueOf(scoreText.getInsets()));
-                Student student = new Student(name, address, classes, id, score);
-            }
-        });
-        //增加用
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = nameText.getText();
-                String address = addressText.getText();
-                String classes = classText.getText();
-                String id = idText.getText();
-                int score = Integer.parseInt(String.valueOf(scoreText.getInsets()));
-                Student student = new Student(name, address, classes, id, score);
-            }
-        });
-        //查询用
+        //点击查询，将查询放到查询结果中
         selectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                StudentDaoImpl studentDao = new StudentDaoImpl();
+                String sid = idText.getText();
+                try {
+                    ResultSet rs = studentDao.selectStudent(sid);
+                    while (rs.next()){
+                        String name=rs.getString("name");
+                        String address = rs.getString("address");
+                        String classes = rs.getString("classes");
+                        String id = rs.getString("id");
+                        int score = rs.getInt("score");
+                        resultText.setText(name+" "+address+" "+classes+" "+id+" "+score);
+                    }
+                } catch (Exception exception) {
+                    System.out.println("查询失败");
+                }
             }
         });
     }

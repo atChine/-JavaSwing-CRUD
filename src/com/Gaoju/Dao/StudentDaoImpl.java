@@ -1,6 +1,5 @@
 package com.Gaoju.Dao;
 
-import com.Gaoju.Photo.HomeworkPhone;
 import com.Gaoju.School.Student;
 import com.Gaoju.Utils.Conn;
 
@@ -38,16 +37,15 @@ public class StudentDaoImpl  {
     }
 
     //查询
-    public List<Student> selectStudent(Student student) throws Exception {
+    public ResultSet selectStudent(String sid) throws Exception {
         List<Student> studentList = new ArrayList<>();
         Connection con = Conn.getCon();
-        String sql="select * from student where id=?";
+        String sql="select * from student where id=?;";
         PreparedStatement state = con.prepareStatement(sql);
-        state.setString(1,student.getId());
+        state.setString(1,sid);
         ResultSet rs = state.executeQuery();
-        studentList.add((Student) rs);
-        System.out.println(studentList);
-        return studentList;
+        System.out.println(rs);
+        return rs;
     }
     //提交
     public boolean submitStudent(Student student) throws Exception {
@@ -57,8 +55,8 @@ public class StudentDaoImpl  {
         statement.setString(1,student.getName());
         statement.setString(2,student.getAddress());
         statement.setString(3,student.getClasses());
-        statement.setString(4, String.valueOf(student.getScore()));
-        statement.setString(5,student.getId());
+        statement.setString(4,student.getId());
+        statement.setString(5, String.valueOf(student.getScore()));
         int raw = statement.executeUpdate();
         if (raw>0){
             JOptionPane.showMessageDialog(null,"提交成功！","消息提示",JOptionPane.WARNING_MESSAGE);	//消息对话框

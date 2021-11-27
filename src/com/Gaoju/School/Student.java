@@ -23,6 +23,7 @@ public class Student {
         this.id = id;
         this.score = score;
     }
+    public Student(){}
 
     public String getName() {
         return name;
